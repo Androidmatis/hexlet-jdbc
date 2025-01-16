@@ -10,28 +10,13 @@ public class Application {
             try (var statement = conn.createStatement()) {
                 statement.execute(sql);
             }
-            var sql2 = "INSERT INTO users (username, phone) VALUES (?, ?)";
-            try (var preparedStatement = conn.prepareStatement(sql2)) {
-                preparedStatement.setString(1, "Tommy");
-                preparedStatement.setString(2, "841343");
-                preparedStatement.executeUpdate();
-                preparedStatement.setString(1, "Marry");
-                preparedStatement.setString(2, "835124");
-                preparedStatement.executeUpdate();
-            }
-            var sql3 = "DELETE FROM users WHERE username = ?";
-            try (var preparedStatement = conn.prepareStatement(sql3)) {
-                preparedStatement.setString(1, "Tommy");
-                preparedStatement.execute();
-            }
-            var sql4 = "SELECT * FROM users";
-            try (var statement4 = conn.createStatement()) {
-                var resultSet = statement4.executeQuery(sql4);
-                while (resultSet.next()) {
-                    System.out.println(resultSet.getString("username"));
-                    System.out.println(resultSet.getString("phone"));
-                }
-            }
+            var dao = new UserDAO(conn);
+            var user = new User("Tommy", "841343");
+            var user2 = new User("Marry", "835124");
+            dao.save(user);
+            dao.save(user2);
+            dao.delete(user.getId());
+            dao.select();
         }
     }
 }
